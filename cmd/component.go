@@ -1,11 +1,9 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/TwiN/go-color"
 	"github.com/spf13/cobra"
-	"log"
 	"rc/generate/component"
+	"rc/pkg/fmtutils"
 )
 
 // componentCmd represents the component command
@@ -14,7 +12,7 @@ var componentCmd = &cobra.Command{
 	Short: "Creates a new component",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println(color.InRed("No component named specified."))
+			fmtutils.FatallnMsg("No component name specified.")
 		}
 		createComponent(args)
 	},
@@ -24,7 +22,7 @@ func createComponent(args []string) {
 	for _, arg := range args {
 		err := component.Create(arg)
 		if err != nil {
-			log.Fatalln(err)
+			fmtutils.Fatalln(err)
 		}
 	}
 }
