@@ -1,15 +1,24 @@
 package component
 
-import "strings"
+import (
+	"path/filepath"
+	"strings"
+)
 
 type Model struct {
-	name string
+	name         string
+	componentDir string
 }
 
 func NewModel(name string) *Model {
-	return &Model{name: strings.Title(name)}
+	newName := strings.Title(name)
+	return &Model{
+		name:         newName,
+		componentDir: filepath.Join("src", "components", newName),
+	}
 }
 
+// getTSXPlaceHolder returns a simple functional component template.
 func getTSXPlaceHolder() string {
 	return `import React, { FC } from 'react';
 import './REPLACE.css';

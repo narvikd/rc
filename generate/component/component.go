@@ -3,8 +3,8 @@ package component
 import (
 	"fmt"
 	"github.com/TwiN/go-color"
-	"io/ioutil"
 	"path/filepath"
+	"rc/pkg/fileutils"
 	"rc/pkg/osutils"
 	"strings"
 )
@@ -12,6 +12,11 @@ import (
 // Create handles component creation. It returns an error if it can't create its files / directories.
 func Create(name string) error {
 	m := NewModel(name)
+
+	errCreateDir := osutils.CreateDir(m.componentDir)
+	if errCreateDir != nil {
+		return errCreateDir
+	}
 
 	errTSX := m.writeFile("tsx", m.createTSX())
 	if errTSX != nil {
@@ -26,20 +31,16 @@ func Create(name string) error {
 	return nil
 }
 
+// writeFile is a wrapper for "fileutils.WriteToFile" to create a file using the Model specs.
 func (m *Model) writeFile(fileType string, content []byte) error {
-	componentDir := filepath.Join("src", "components", m.name)
 	fileName := fmt.Sprintf("%s.%s", m.name, fileType)
-	filePath := filepath.Join(componentDir, fileName)
+	filePath := filepath.Join(m.componentDir, fileName)
 
-	errCreateDir := osutils.CreateDir(componentDir)
-	if errCreateDir != nil {
-		return errCreateDir
-	}
-
-	err := ioutil.WriteFile(filePath, content, 0600)
+	err := fileutils.WriteToFile(filePath, content)
 	if err != nil {
-		return fmt.Errorf("couldn't create file: %s. Error: %w", fileName, err)
+		return err
 	}
+
 	fmt.Printf(color.InGreen("%s was successfully created at %s\n"), fileName, filePath)
 	return nil
 }
@@ -49,6 +50,7 @@ func (m *Model) createTSX() []byte {
 	return []byte(strings.ReplaceAll(getTSXPlaceHolder(), "REPLACE", m.name))
 }
 
+// createCSS creates a simple CSS file.
 func (m *Model) createCSS() []byte {
 	return []byte(fmt.Sprintf(".%s {}", m.name))
 }
