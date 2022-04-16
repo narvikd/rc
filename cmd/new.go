@@ -20,8 +20,7 @@ var newCmd = &cobra.Command{
 }
 
 func createNewProject(args []string) {
-	_, err := osutils.NewProcess(false,
-		"npx", "create-react-app", args[0], "--template", "typescript")
+	_, err := osutils.NewProcess("npx", "create-react-app", args[0], "--template", "typescript")
 	if err != nil {
 		fmtutils.Fatalln(err)
 	}
