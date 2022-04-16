@@ -36,7 +36,7 @@ func (m *Model) writeFile(fileType string, content []byte) error {
 		return errCreateDir
 	}
 
-	err := ioutil.WriteFile(filePath, content, 0644)
+	err := ioutil.WriteFile(filePath, content, 0600)
 	if err != nil {
 		return fmt.Errorf("couldn't create file: %s. Error: %w", fileName, err)
 	}
