@@ -10,10 +10,10 @@ import (
 )
 
 // Create handles component creation. It returns an error if it can't create its files / directories.
-func Create(name string) error {
-	m := NewModel(name)
+func Create(name string, isReturnComponentSet bool) error {
+	m := NewModel(name, isReturnComponentSet)
 
-	errCreateDir := osutils.CreateDir(m.componentDir)
+	errCreateDir := osutils.CreateDir(m.ComponentDir)
 	if errCreateDir != nil {
 		return errCreateDir
 	}
@@ -33,8 +33,8 @@ func Create(name string) error {
 
 // writeFile is a wrapper for "fileutils.WriteToFile" to create a file using the Model specs.
 func (m *Model) writeFile(fileType string, content []byte) error {
-	fileName := fmt.Sprintf("%s.%s", m.name, fileType)
-	filePath := filepath.Join(m.componentDir, fileName)
+	fileName := fmt.Sprintf("%s.%s", m.Name, fileType)
+	filePath := filepath.Join(m.ComponentDir, fileName)
 
 	err := fileutils.WriteToFile(filePath, content)
 	if err != nil {
@@ -47,10 +47,13 @@ func (m *Model) writeFile(fileType string, content []byte) error {
 
 // createTSX uses getTSXPlaceHolder() as the template to generate the new .tsx
 func (m *Model) createTSX() []byte {
-	return []byte(strings.ReplaceAll(getTSXPlaceHolder(), "REPLACE", m.name))
+	if m.IsReturnComponentSet {
+		return []byte(strings.ReplaceAll(getTSXPlaceHolderWithReturn(), "REPLACE", m.Name))
+	}
+	return []byte(strings.ReplaceAll(getTSXPlaceHolder(), "REPLACE", m.Name))
 }
 
 // createCSS creates a simple CSS file.
 func (m *Model) createCSS() []byte {
-	return []byte(fmt.Sprintf(".%s {}", m.name))
+	return []byte(fmt.Sprintf(".%s {}", m.Name))
 }
