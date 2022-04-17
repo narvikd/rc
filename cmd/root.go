@@ -10,7 +10,7 @@ import (
 	"runtime"
 )
 
-var AppVersion = "0.0.2"
+var AppVersion = "v0.0.3"
 var showVersion bool
 var tryUpdate bool
 
@@ -55,7 +55,11 @@ func handleUpdate() {
 	}
 
 	if status == updater.Updated {
-		fmt.Println("RC found a new version and updated itself, please restart.")
+		fmt.Println("rc found a new version and updated itself, please restart.")
+	} else if status == updater.UpToDate {
+		fmt.Println("rc is up to date.")
+	} else {
+		fmt.Println("Couldn't check for new versions.")
 	}
 }
 
