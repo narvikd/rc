@@ -40,9 +40,9 @@ func handleUpdate() {
 	u := &updater.Updater{
 		Provider: &provider.Github{
 			RepositoryURL: "https://github.com/narvikd/rc",
-			ArchiveName:   fmt.Sprintf("binaries_%s.zip", runtime.GOOS),
+			ArchiveName:   getArchiveName(),
 		},
-		ExecutableName: fmt.Sprintf("rc_%s_%s", runtime.GOOS, runtime.GOARCH),
+		ExecutableName: fmt.Sprintf("rc"),
 		Version:        AppVersion,
 	}
 
@@ -57,6 +57,13 @@ func handleUpdate() {
 	if status == updater.Updated {
 		fmt.Println("RC found a new version and updated itself, please restart.")
 	}
+}
+
+func getArchiveName() string {
+	if runtime.GOOS == "windows" {
+		return fmt.Sprintf("rc_%s-%s.zip", runtime.GOOS, runtime.GOARCH)
+	}
+	return fmt.Sprintf("rc_%s-%s.tar.gz", runtime.GOOS, runtime.GOARCH)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
