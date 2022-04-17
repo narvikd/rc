@@ -48,7 +48,7 @@ const REPLACE: FC<REPLACEProps> = () => {
       <div className="REPLACE">
           REPLACE Component
       </div>
-  )
+  );
 };
 
 export default REPLACE;
