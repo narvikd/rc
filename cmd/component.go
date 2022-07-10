@@ -6,8 +6,6 @@ import (
 	"rc/pkg/fmtutils"
 )
 
-var isReturnComponentSet bool
-
 // componentCmd represents the component command
 var componentCmd = &cobra.Command{
 	Use:   "c",
@@ -16,13 +14,13 @@ var componentCmd = &cobra.Command{
 		if len(args) == 0 {
 			fmtutils.FatallnMsg("No component name specified.")
 		}
-		createComponent(args, isReturnComponentSet)
+		createComponent(args)
 	},
 }
 
-func createComponent(args []string, isReturnComponentSet bool) {
+func createComponent(args []string) {
 	for _, arg := range args {
-		err := component.Create(arg, isReturnComponentSet)
+		err := component.Create(arg)
 		if err != nil {
 			fmtutils.Fatalln(err)
 		}
@@ -31,6 +29,4 @@ func createComponent(args []string, isReturnComponentSet bool) {
 
 func init() {
 	generateCmd.AddCommand(componentCmd)
-	componentCmd.Flags().BoolVarP(&isReturnComponentSet, "return", "r", false,
-		"Creates the component with a return structure.")
 }

@@ -9,9 +9,22 @@ import (
 	"strings"
 )
 
+type Model struct {
+	Name         string
+	ComponentDir string
+}
+
+func NewModel(name string) *Model {
+	newName := strings.Title(name)
+	return &Model{
+		Name:         newName,
+		ComponentDir: filepath.Join("src", "components", newName),
+	}
+}
+
 // Create handles component creation. It returns an error if it can't create its files / directories.
-func Create(name string, isReturnComponentSet bool) error {
-	m := NewModel(name, isReturnComponentSet)
+func Create(name string) error {
+	m := NewModel(name)
 
 	errCreateDir := osutils.CreateDir(m.ComponentDir)
 	if errCreateDir != nil {
@@ -47,13 +60,29 @@ func (m *Model) writeFile(fileType string, content []byte) error {
 
 // createTSX uses getTSXPlaceHolder() as the template to generate the new .tsx
 func (m *Model) createTSX() []byte {
-	if m.IsReturnComponentSet {
-		return []byte(strings.ReplaceAll(getTSXPlaceHolderWithReturn(), "REPLACE", m.Name))
-	}
 	return []byte(strings.ReplaceAll(getTSXPlaceHolder(), "REPLACE", m.Name))
 }
 
 // createCSS creates a simple CSS file.
 func (m *Model) createCSS() []byte {
 	return []byte(fmt.Sprintf(".%s {}", m.Name))
+}
+
+// getTSXPlaceHolder returns a simple functional component template.
+func getTSXPlaceHolder() string {
+	return `import React, { FC } from 'react';
+import './REPLACE.css';
+
+interface REPLACEProps {}
+
+const REPLACE: FC<REPLACEProps> = () => {
+  return (
+      <div className="REPLACE">
+          REPLACE Component
+      </div>
+  );
+};
+
+export default REPLACE;
+`
 }
